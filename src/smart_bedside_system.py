@@ -1,3 +1,4 @@
+import smart_bedside_error
 from src.smart_bedside_error import SmartBedsideError
 
 try:
@@ -22,7 +23,10 @@ class SmartBedsideSystem:
         GPIO.setmode(GPIO.BOARD)  # Refer to the GPIO pins by their physical number on the board.
         GPIO.setwarnings(False)  # Disable warnings.
 
-        self.spo2_hr_sensor = None  # Replace None by initializing the MAX30102 sensor (see User Story #1).
+        self.spo2_hr_sensor = DFRobot_BloodOxygen_S()  # Replace None by initializing the MAX30102 sensor (see User Story #1).
+
+        self.spo2_hr_sensor.begin()
+        self.spo2_hr_sensor.sensor_start_collect()
 
         self.alarm_on = None  # Replace None by initializing the alarm status (see User Story #2).
 
@@ -36,6 +40,12 @@ class SmartBedsideSystem:
         Raises: SmartBedsideError: If the sensor returns an invalid reading (-1).
         """
         # See User Story #1.
+        val = self.spo2_hr_sensor.get_spo2()
+
+        if val == -1:
+            raise SmartBedsideError
+        else:
+            return val
 
     def manage_alarm(self) -> None:
         """
