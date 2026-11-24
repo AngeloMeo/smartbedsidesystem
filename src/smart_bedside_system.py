@@ -36,9 +36,9 @@ class SmartBedsideSystem:
 
         GPIO.setup(self.O2_SERVO_PIN, GPIO.OUT)
         self.o2_servo = GPIO.PWM(self.O2_SERVO_PIN, 50)  # Replace None by initializing the servo motor's PWM instance (see User Story #4).
-        self.o2_servo.start(5.0)
-
         self.o2_valve_angle = 0  # Replace None by initializing the valve angle, in degrees (see User Story #4).
+        duty_cycle = 5.0 + (self.o2_valve_angle / 180.0) * 5.0
+        self.o2_servo.start(duty_cycle)
 
     def read_vital_signs(self) -> int:
         """
@@ -100,3 +100,8 @@ class SmartBedsideSystem:
         Raises: SmartBedsideError: If the SpO₂ reading is invalid (propagated from read_vital_signs()).
         """
         # See User Story #5.
+        if self.read_vital_signs() < 95:
+            self.set_o2_valve_angle(180)
+        else:
+            self.set_o2_valve_angle(0)
+
