@@ -83,7 +83,7 @@ class SmartBedsideSystem:
         """
         # See User Story #3.
         if GPIO.input(self.BUTTON_PIN):
-            self.alarm_on = False
+            self.alarm_led_on = self.alarm_on = False
             self.manage_alarm()
 
 
